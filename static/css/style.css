@@ -1,3 +1,8 @@
+input:-webkit-autofill {
+    -webkit-text-fill-color: inherit;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -13,9 +18,9 @@ body{
 }
 
 .gradient-background {
-  background: linear-gradient(300deg, #00bfff, #ff4c68, #ef8172);
+  background: linear-gradient(300deg, #00bfff, #ca2bb7, #d383b0);
   background-size: 180% 180%;
-  animation: gradient-animation 18s ease infinite;
+  animation: gradient-animation 25s ease infinite;
 }
 
 @keyframes gradient-animation {
@@ -32,8 +37,8 @@ body{
 
 .wrapper {
     width: 420px;
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, .2);
+    background: rgba(241, 225, 225, .8);
+    border: 2px solid rgba(184, 174, 174, 0.4);
     backdrop-filter: blur(20px);
     box-shadow: 0 0 10px rgba(0, 0, 0, .2);
     border-radius: 20px;
@@ -80,6 +85,7 @@ body{
     justify-content: space-between;
     font-size: 14.5px;
     margin: -15px 0 15px;
+    accent-color: rgb(240, 56, 96);
 }
 
 .remember-forgot a {
@@ -89,7 +95,7 @@ body{
 .wrapper .btn-submit {
     width: 100%;
     height: 45px;
-    background: red;
+    background: rgb(240, 56, 96);
     border: none;
     outline: none;
     border-radius: 40px;
@@ -99,13 +105,15 @@ body{
     color: white;
 }
 
-.wrapper .register-login-link {
+.wrapper .register-login-link,
+.wrapper .register-link {
     font-size: 14.5px;
     text-align: center;
     margin: 20px 0 15px;
 }
 
-.register-login-link p a {
+.register-login-link p a,
+.register-link p a {
     text-decoration: none;
     font-weight: 600;
 }

@@ -1,0 +1,8 @@
+18.07.2023: basic css style changes
+
+changed background of form,
+changed background and speed of login/register, 
+autofill input no longer changes color of input box,
+changed .wrapper .register-link and .wrapper .register-login-link to be more consistent,
+changed remember me checkbox color to match submit button
+############################################################################################
