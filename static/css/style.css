@@ -38,6 +38,10 @@ body{
     background-color: rgba(241, 225, 225, .8);
 }
 
+.nav ul li{
+    list-style-type: none !important;
+}
+
 .nav-itempack-home{
     display: flex !important;
     margin-left: 0.5rem;
@@ -58,12 +62,7 @@ body{
     justify-content: right;
     flex-grow: 1 !important;
 }
-/* tohle dole potom příjde smazat jakmile bude vyřešena logika navbaru */
-/* pro test je třeba zakomentovat */
-.nav-itempack-login{
-    display: none !important;
-}
-/* <-- po tohle */
+
 .nav-item{
     margin: 0.5rem;
 }
