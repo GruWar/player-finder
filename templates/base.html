@@ -9,5 +9,39 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>{% block title %}{% endblock %}</title>
   </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-itempack-home">
+          <div class="nav-item">
+              <a href="/"><p>home</p></a>
+          </div>
+      </div>
+      <div class="nav-itempack-search">
+          <!-- 
+          <div class="nav-item">
+              search goes here
+          </div>
+          -->
+      </div>
+      <div class="nav-itempack-login">
+          <div class="nav-item">
+              <a href="/login"><p>login</p></a>
+          </div>
+      </div>
+      <div class="nav-itempack-logedin">
+          <div class="nav-item">
+              <a href=""><p>groups</p></a>
+          </div>
+          <div class="nav-item">
+              <a href=""><p>profil</p></a>
+          </div>
+          <div class="nav-item">
+              <a href=""><p>log out</p></a>
+          </div>
+          
+      </div>
+      
+    </nav>
     {% block content %}{% endblock %}
+  </body>
 </html>

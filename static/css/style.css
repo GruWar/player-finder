@@ -12,12 +12,70 @@ input:-webkit-autofill {
 
 body{
     display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.gradient-background{
+    display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    width: 100vw;
+}
+
+.nav {
+    display: flex;
+    width: 100%;
+    height: 3rem;
+    border: solid black 1px;
+    align-items: center !important;
+    overflow: hidden;
+    z-index: 10 !important;
+    position: fixed;
+    top: 0;
+    background-color: rgba(241, 225, 225, .8);
+}
+
+.nav-itempack-home{
+    display: flex !important;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    justify-content: left;
+}
+
+.nav-itempack-search{
+    display: flex !important;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.nav-itempack-login, .nav-itempack-logedin{
+    display: flex !important;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    justify-content: right;
+    flex-grow: 1 !important;
+}
+/* tohle dole potom příjde smazat jakmile bude vyřešena logika navbaru */
+/* pro test je třeba zakomentovat */
+.nav-itempack-login{
+    display: none !important;
+}
+/* <-- po tohle */
+.nav-item{
+    margin: 0.5rem;
+}
+
+.nav a{
+    text-decoration: none;
+    color: inherit;
+    font-size: inherit;
 }
 
 .gradient-background {
+  
   background: linear-gradient(300deg, #00bfff, #ca2bb7, #d383b0);
   background-size: 180% 180%;
   animation: gradient-animation 25s ease infinite;
