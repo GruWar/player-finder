@@ -10,38 +10,25 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
+  <header>
     <nav class="nav">
-      <ul class="nav-itempack-home">
-          <li class="nav-item">
-              <a href="/"><p>home</p></a>
-          </li>
+        {% if not logged_in: %}
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="">Contact</a></li>
+            <li style="float:right"><a href="{{ url_for('login') }}">Login</a></li>
         </ul>
-      <ul class="nav-itempack-search">
-          <!-- 
-          <li class="nav-item">
-              search goes here
-          </li>
-          -->
+        {% endif %}
+        {% if logged_in: %}
+        <ul>
+            <li><a href="{{ url_for('contributions') }}">Home</a></li>
+            <li style="float:right"><a href="{{ url_for('logout') }}">Log out</a></li>
+            <li style="float:right"><a href="{{ url_for('profile') }}">Profile</a></li>
         </ul>
-      <ul class="nav-itempack-login">
-          <li class="nav-item">
-              <a href="/login"><p>login</p></a>
-          </li>
-        </ul>
-      <ul class="nav-itempack-logedin">
-          <li class="nav-item">
-              <a href=""><p>groups</p></a>
-          </li>
-          <li class="nav-item">
-              <a href=""><p>profil</p></a>
-          </li>
-          <li class="nav-item">
-              <a href=""><p>log out</p></a>
-          </li>
-          
-        </ul>
-      
+        {% endif %}
     </nav>
-    {% block content %}{% endblock %}
+  </header>
+    {% block content %}
+    {% endblock %}
   </body>
 </html>

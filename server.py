@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -20,7 +20,7 @@ def load_user(user_id):
 
 # CREATE TABLE IN DB
 # UserMixin,
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True)
     email = db.Column(db.String(100))
@@ -34,7 +34,7 @@ class User(db.Model):
 # routing
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", logged_in=current_user.is_authenticated)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -45,9 +45,10 @@ def login():
 
         user = User.query.filter_by(username=username).first()
         if check_password_hash(user.password, password):
-            return redirect(url_for("home"))
+            login_user(user)
+            return redirect(url_for("contributions"))
 
-    return render_template("login.html")
+    return render_template("login.html", logged_in=current_user.is_authenticated)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -67,8 +68,27 @@ def register():
 
         db.session.add(new_user)
         db.session.commit()
-        return redirect(url_for("home"))
-    return render_template("register.html")
+        login_user(new_user)
+        return redirect(url_for("contributions"))
+    return render_template("register.html", logged_in=current_user.is_authenticated)
+
+
+@app.route("/home")
+@login_required
+def contributions():
+    return render_template("home.html", logged_in=current_user.is_authenticated)
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return render_template("profile.html", logged_in=current_user.is_authenticated)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 
 # run app
