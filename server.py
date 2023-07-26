@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -19,7 +19,6 @@ def load_user(user_id):
 
 
 # CREATE TABLE IN DB
-# UserMixin,
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True)
@@ -33,20 +32,29 @@ class User(UserMixin, db.Model):
 
 # routing
 @app.route("/")
-def home():
+def index():
     return render_template("index.html", logged_in=current_user.is_authenticated)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-        user = User.query.filter_by(username=username).first()
-        if check_password_hash(user.password, password):
+        user = User.query.filter_by(email=email).first()
+        # Email doesn't exist
+        if not user:
+            flash("That email does not exist, please try again.")
+            return redirect(url_for('login'))
+        # Password incorrect
+        elif not check_password_hash(user.password, password):
+            flash('Password incorrect, please try again.')
+            return redirect(url_for('login'))
+        # Email exists and password correct
+        else:
             login_user(user)
-            return redirect(url_for("contributions"))
+            return redirect(url_for('home'))
 
     return render_template("login.html", logged_in=current_user.is_authenticated)
 
@@ -54,6 +62,12 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+
+        if User.query.filter_by(email=request.form.get('email')).first():
+            # User already exists
+            flash("You've already signed up with that email, log in instead!")
+            return redirect(url_for('login'))
+
         hash_and_salted_password = generate_password_hash(
             request.form.get("password"),
             method="pbkdf2",
@@ -69,26 +83,47 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return redirect(url_for("contributions"))
+        return redirect(url_for("home"))
     return render_template("register.html", logged_in=current_user.is_authenticated)
 
 
 @app.route("/home")
 @login_required
-def contributions():
+def home():
     return render_template("home.html", logged_in=current_user.is_authenticated)
 
 
-@app.route("/profile")
+@app.route("/profile", methods=["GET", "POST"])
 @login_required
-def profile():
-    return render_template("profile.html", logged_in=current_user.is_authenticated)
+def edit_profile():
+    if request.method == "POST":
+        # edit profile
+        user = User.query.filter_by(username=current_user.username).first()
+        old_password = request.form.get("old-password")
+        new_password = request.form.get("new-password")
+        username = request.form.get("username")
+        email = request.form.get("email")
+        if not db.session.query(db.exists().where(User.username == username)).scalar():
+            user.username = username
+        if not db.session.query(db.exists().where(User.email == email)).scalar():
+            user.email = email
+        # change password
+        if check_password_hash(user.password, old_password):
+            hash_and_salted_password = generate_password_hash(
+            new_password,
+            method="pbkdf2",
+            salt_length=8,
+            )
+            user.password = hash_and_salted_password
+        db.session.commit()
+    user = current_user
+    return render_template("profile.html", logged_in=current_user.is_authenticated, user=user)
 
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 
 # run app

@@ -14,16 +14,16 @@
     <nav class="nav">
         {% if not logged_in: %}
         <ul>
-            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
             <li><a href="">Contact</a></li>
             <li style="float:right"><a href="{{ url_for('login') }}">Login</a></li>
         </ul>
         {% endif %}
         {% if logged_in: %}
         <ul>
-            <li><a href="{{ url_for('contributions') }}">Home</a></li>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
             <li style="float:right"><a href="{{ url_for('logout') }}">Log out</a></li>
-            <li style="float:right"><a href="{{ url_for('profile') }}">Profile</a></li>
+            <li style="float:right"><a href="{{ url_for('edit_profile') }}">Profile</a></li>
         </ul>
         {% endif %}
     </nav>
