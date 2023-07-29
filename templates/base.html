@@ -12,16 +12,19 @@
   <body>
   <header>
     <nav class="nav">
-        {% if not logged_in: %}
+        {% if not current_user.is_authenticated: %}
         <ul>
             <li><a href="{{ url_for('index') }}">Home</a></li>
             <li><a href="">Contact</a></li>
             <li style="float:right"><a href="{{ url_for('login') }}">Login</a></li>
         </ul>
         {% endif %}
-        {% if logged_in: %}
+        {% if current_user.is_authenticated: %}
         <ul>
             <li><a href="{{ url_for('home') }}">Home</a></li>
+            {% if current_user.is_admin == True: %}
+            <li><a href="{{ url_for('admin_edit') }}">admin_edit</a></li>
+            {% endif %}
             <li style="float:right"><a href="{{ url_for('logout') }}">Log out</a></li>
             <li style="float:right"><a href="{{ url_for('edit_profile') }}">Profile</a></li>
         </ul>

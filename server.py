@@ -22,18 +22,24 @@ def load_user(user_id):
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True)
-    email = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
+    is_admin = db.Column(db.Boolean)
 
 
-# with app.app_context():
-#     db.create_all()
+class Game(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True)
+
+
+with app.app_context():
+    db.create_all()
 
 
 # routing
 @app.route("/")
 def index():
-    return render_template("index.html", logged_in=current_user.is_authenticated)
+    return render_template("index.html", current_user=current_user)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -56,7 +62,7 @@ def login():
             login_user(user)
             return redirect(url_for('home'))
 
-    return render_template("login.html", logged_in=current_user.is_authenticated)
+    return render_template("login.html", current_user=current_user)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -67,7 +73,9 @@ def register():
             # User already exists
             flash("You've already signed up with that email, log in instead!")
             return redirect(url_for('login'))
-
+        if User.query.filter_by(username=request.form.get('username')).first():
+            flash("This username is used, please choice another")
+            return redirect(url_for('register'))
         hash_and_salted_password = generate_password_hash(
             request.form.get("password"),
             method="pbkdf2",
@@ -78,19 +86,20 @@ def register():
             username=request.form.get("username"),
             email=request.form.get("email"),
             password=hash_and_salted_password,
+            is_admin=False,
         )
 
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
         return redirect(url_for("home"))
-    return render_template("register.html", logged_in=current_user.is_authenticated)
+    return render_template("register.html", current_user=current_user)
 
 
 @app.route("/home")
 @login_required
 def home():
-    return render_template("home.html", logged_in=current_user.is_authenticated)
+    return render_template("home.html", current_user=current_user)
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -103,22 +112,37 @@ def edit_profile():
         new_password = request.form.get("new-password")
         username = request.form.get("username")
         email = request.form.get("email")
-        if not db.session.query(db.exists().where(User.username == username)).scalar():
+        if db.session.query(db.exists().where(User.username == username)).scalar() and user.username != username:
+            flash("This username is used, please choice another")
+            return redirect(url_for('edit_profile'))
+        else:
             user.username = username
-        if not db.session.query(db.exists().where(User.email == email)).scalar():
+
+        if db.session.query(db.exists().where(User.email == email)).scalar() and user.email != email:
+            flash("This email is used, please choice another")
+            return redirect(url_for('edit_profile'))
+        else:
             user.email = email
         # change password
         if check_password_hash(user.password, old_password):
             hash_and_salted_password = generate_password_hash(
-            new_password,
-            method="pbkdf2",
-            salt_length=8,
+                new_password,
+                method="pbkdf2",
+                salt_length=8,
             )
             user.password = hash_and_salted_password
         db.session.commit()
     user = current_user
-    return render_template("profile.html", logged_in=current_user.is_authenticated, user=user)
+    return render_template("profile.html", current_user=current_user, user=user)
 
+
+@app.route("/admin_edit")
+@login_required
+def admin_edit():
+    if current_user.is_admin == True:
+        return render_template("admin.html", current_user=current_user)
+    else:
+        return render_template("home.html", current_user=current_user)
 
 @app.route('/logout')
 def logout():

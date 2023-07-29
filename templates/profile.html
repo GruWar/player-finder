@@ -4,6 +4,13 @@
 <div class="wrapper profile">
     <form action="{{ url_for('edit_profile') }}" method="POST">
         <h2>Edit Profile</h2>
+            {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                     <p>{{ message }}</p>
+                    {% endfor %}
+                  {% endif %}
+            {% endwith %}
         <div class="input-box">
             <input type="text" value="{{ user.username }}" name="username">
         </div>
