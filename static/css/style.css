@@ -47,7 +47,7 @@ body{
 }
 .gradient-background {
   
-  background: linear-gradient(300deg, #121212, #3f3f3f, #282828);*/
+  background: linear-gradient(300deg, #121212, #3f3f3f, #282828);
   background-size: 180% 180%;
   animation: gradient-animation 25s ease infinite;
 }
@@ -137,6 +137,12 @@ body{
     color: var(--color-text);
 }
 
+.wrapper .msg-error{
+  color: rgb(253, 14, 14);
+  margin: 5px 0 -15px 20px;
+  font-weight: 500;
+}
+
 /*.wrapper .btn-submit:hover{
   background-color: var(--color-primary-300);
   transition: 0.2s;
@@ -204,4 +210,36 @@ header li a:hover {
 
 .wrapper-profile .input-box, h2{
   margin-bottom: 1rem;
+}
+
+/* party request bubble */
+.request-container{
+  color: var(--color-text);
+}
+
+.description{
+  margin: 15px 0 15px 0;
+}
+
+.creator{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.creator:hover{
+  overflow: initial;
+  text-overflow: initial;
+}
+
+.btn-join{
+  color: var(--color-text);
+  background-color: var(--color-primary-500);
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14.5px;
+  height: 40px;
+  width: 80px;
+  float: right;
 }

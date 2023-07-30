@@ -2,4 +2,18 @@
 {% block title %}Player Finder{% endblock %}
 {% block content %}
 <h1>Home</h1>
+<div class="wrapper request-container">
+    <h2 class="request-item">Name of the game</h2>
+    <div style="float: right; width: 90px;">
+        <p>Status</p>
+        <p class="creator">Creator name</p>
+    </div>
+    <p>Date <br>T.Start - T.End</p>
+    <p style="margin-top: 20px;">Capacity status</p>
+    <p class="description">Looking for 4 players for cassual draft games, any ranks and any skill level welcomed.</p>
+    <form action="" method="POST">
+        <button type="submit" class="btn-join" name="submit">Join!</button>
+    </form>
+
+</div>
 {% endblock %}

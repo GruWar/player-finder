@@ -9,7 +9,7 @@
                 {% with messages = get_flashed_messages() %}
                   {% if messages %}
                     {% for message in messages %}
-                     <p>{{ message }}</p>
+                     <p class="msg-error">{{ message }}</p>
                     {% endfor %}
                   {% endif %}
                 {% endwith %}
@@ -22,8 +22,8 @@
                 <i class='bx bxs-lock-alt' ></i>
             </div>
             <div class="remember-forgot">
-                <label><input type="checkbox"> Remember me</label>
-                <a href="#">Forgot password?</a>
+                <label style="color: #e7e7e7;"><input type="checkbox"> Remember me</label>
+                <a href="#" style="color: #ba9ffb;">Forgot password?</a>
             </div>
             <button type="submit" class="btn-submit" name="submit">Login</button>
             <div class="register-link">
