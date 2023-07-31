@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 # variable init
 app = Flask(__name__)
@@ -18,7 +19,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# CREATE TABLE IN DB
+# TABLE IN DB
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True)
@@ -32,8 +33,23 @@ class Game(db.Model):
     name = db.Column(db.String(100), unique=True)
 
 
-with app.app_context():
-    db.create_all()
+class Group(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    game_name = db.Column(db.String(100))
+    status = db.Column(db.String(50))
+    creator = db.Column(db.String(100))
+    start_date = db.Column(db.String(50))
+    end_date = db.Column(db.String(50))
+    start_time = db.Column(db.String(50))
+    end_time = db.Column(db.String(50))
+    act_capacity = db.Column(db.Integer)
+    max_capacity = db.Column(db.Integer)
+    description = db.Column(db.String(500))
+
+
+# create tables
+# with app.app_context():
+#    db.create_all()
 
 
 # routing
@@ -96,53 +112,96 @@ def register():
     return render_template("register.html", current_user=current_user)
 
 
-@app.route("/home")
+@app.route("/home", methods=["GET", "POST"])
 @login_required
 def home():
-    return render_template("home.html", current_user=current_user)
+    posts = Group.query.all()
+    return render_template("home.html", current_user=current_user, posts=posts)
+
+
+@app.route("/create_group", methods=["GET", "POST"])
+@login_required
+def create_group():
+    if request.method == "POST":
+        new_group = Group(
+            game_name=request.form.get("game_name"),
+            creator=current_user.username,
+            start_date=request.form.get("start_date"),
+            start_time=request.form.get("start_time"),
+            end_date=request.form.get("end_date"),
+            end_time=request.form.get("end_time"),
+            status="run",
+            act_capacity=1,
+            max_capacity=request.form.get("max_players"),
+            description=request.form.get("description"),
+        )
+
+        db.session.add(new_group)
+        db.session.commit()
+        return redirect(url_for("home"))
+    return render_template("create_group.html", current_user=current_user)
 
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def edit_profile():
     if request.method == "POST":
-        # edit profile
         user = User.query.filter_by(username=current_user.username).first()
         old_password = request.form.get("old-password")
         new_password = request.form.get("new-password")
         username = request.form.get("username")
         email = request.form.get("email")
-        if db.session.query(db.exists().where(User.username == username)).scalar() and user.username != username:
-            flash("This username is used, please choice another")
-            return redirect(url_for('edit_profile'))
-        else:
-            user.username = username
+        if request.form['action'] == "save":
+            # edit profile
+            if db.session.query(db.exists().where(User.username == username)).scalar() and user.username != username:
+                flash("This username is used, please choice another")
+                return redirect(url_for('edit_profile'))
+            else:
+                user.username = username
 
-        if db.session.query(db.exists().where(User.email == email)).scalar() and user.email != email:
-            flash("This email is used, please choice another")
-            return redirect(url_for('edit_profile'))
-        else:
-            user.email = email
-        # change password
-        if check_password_hash(user.password, old_password):
-            hash_and_salted_password = generate_password_hash(
-                new_password,
-                method="pbkdf2",
-                salt_length=8,
-            )
-            user.password = hash_and_salted_password
-        db.session.commit()
-    user = current_user
-    return render_template("profile.html", current_user=current_user, user=user)
+            if db.session.query(db.exists().where(User.email == email)).scalar() and user.email != email:
+                flash("This email is used, please choice another")
+                return redirect(url_for('edit_profile'))
+            else:
+                user.email = email
+        elif request.form['action'] == "change password":
+            # change password
+            if check_password_hash(user.password, old_password):
+                hash_and_salted_password = generate_password_hash(
+                    new_password,
+                    method="pbkdf2",
+                    salt_length=8,
+                )
+                user.password = hash_and_salted_password
+            db.session.commit()
+    return render_template("profile.html", current_user=current_user)
 
 
-@app.route("/admin_edit")
+@app.route("/admin_edit", methods=["GET", "POST"])
 @login_required
 def admin_edit():
-    if current_user.is_admin == True:
+    if current_user.is_admin == 1:
+        if request.method == "POST":
+            if request.form['action'] == "add_game":
+                game_name = request.form.get("game_name")
+                new_game = Game(
+                    name=game_name,
+                )
+                db.session.add(new_game)
+                db.session.commit()
+                return redirect(url_for("admin_edit"))
+            if request.form['action'] == "delete_game":
+                game_id = request.form.get("game_id")
+                Game.query.filter_by(id=game_id).delete()
+                db.session.commit()
+            if request.form['action'] == "delete_user":
+                user_id = request.form.get("user_id")
+                User.query.filter_by(id=user_id).delete()
+                db.session.commit()
         return render_template("admin.html", current_user=current_user)
     else:
         return render_template("home.html", current_user=current_user)
+
 
 @app.route('/logout')
 def logout():

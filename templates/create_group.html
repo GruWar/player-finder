@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Player Finder{% endblock %}
+{% block content %}
+<h1>Create Groups</h1>
+<div class="wrapper profile">
+    <form action="{{ url_for('create_group') }}" method="POST">
+        <h3>Game Name</h3>
+        <div class="input-box">
+            <input type="text" name="game_name">
+        </div>
+        <h3>start</h3>
+        <div class="input-box">
+            <input type="date" id="start_date" name="start_date">
+        </div>
+        <div class="input-box">
+            <input type="time" name="start_time">
+        </div>
+        <h3>end</h3>
+        <div class="input-box">
+            <input type="date" name="end_date">
+        </div>
+        <div class="input-box">
+            <input type="time" name="end_time">
+        </div>
+        <h3>number of players</h3>
+        <div class="input-box">
+            <input type="number" name="max_players">
+        </div>
+        <h3>description</h3>
+        <div class="input-box">
+            <input type="text" name="description">
+        </div>
+        <button type="submit" class="btn-submit" name="submit">create</button>
+    </form>
+</div>
+{% endblock %}

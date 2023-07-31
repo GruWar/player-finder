@@ -208,6 +208,10 @@ header li a:hover {
   color: var(--color-text);
 }
 
+.profile h3{
+  color: var(--color-text);
+}
+
 .wrapper-profile .input-box, h2{
   margin-bottom: 1rem;
 }
