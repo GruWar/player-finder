@@ -197,11 +197,15 @@ header li a:hover {
 
 /* profile */
 .profile{
-  margin-left: 5vw;
-  margin-top: 10vh;
+  align-self: center;
+  margin-top: 5vh;
   /*border: none;
   border-radius: 0;
   box-shadow: none;*/
+}
+
+.profile input{
+  margin-bottom: 30px;
 }
 
 .profile h2{
@@ -216,9 +220,28 @@ header li a:hover {
   margin-bottom: 1rem;
 }
 
+/* party request main body*/
+.groups-wrapper{
+  display: flex;
+  align-self: center;
+  flex-direction: row;
+}
+.groups-container{
+  flex-direction: column;
+}
+
+.groups-filter{
+  width: 300px;
+}
+
 /* party request bubble */
 .request-container{
   color: var(--color-text);
+  margin-bottom: 30px;
+}
+
+.request-container form{
+  height: 40px;
 }
 
 .description{

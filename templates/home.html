@@ -3,21 +3,30 @@
 {% block content %}
 <a href="{{ url_for('create_group') }}">Create</a>
 <h1>Actual Groups</h1>
-{% for post in posts: %}
-<div class="wrapper request-container">
-    <h2 class="request-item">{{ post.tittle }}</h2>
-    <h3 class="request-item">{{ post.game_name }}</h3>
-    <div style="float: right; width: 90px;">
-        <p>{{ post.status }}</p>
-        <p class="creator">{{ post.creator }}</p>
+
+<div class="groups-wrapper">
+    <div class="groups-filter">
+        <!-- sem prijdou filtry-->
     </div>
-    <p>Date <br>{{ post.start_date }}-{{ post.end_date }}</p>
-    <p>Time <br>{{ post.start_time }}-{{ post.end_time }}</p>
-    <p style="margin-top: 20px;">{{ post.act_capacity }}/{{ post.max_capacity }}</p>
-    <p class="description">{{ post.description }}</p>
-    <form action="" method="POST">
-        <button type="submit" class="btn-join" name="submit">Join!</button>
-    </form>
+    <div class="groups-container">
+        {% for post in posts: %}
+        <div class="wrapper request-container">
+            <h2 class="request-item">{{ post.tittle }}</h2>
+            <h3 class="request-item">{{ post.game_name }}</h3>
+            <div style="float: right; width: 90px;">
+                <p>{{ post.status }}</p>
+                <p class="creator">{{ post.creator }}</p>
+            </div>
+            <p>Date <br>{{ post.start_date }}-{{ post.end_date }}</p>
+            <p>Time <br>{{ post.start_time }}-{{ post.end_time }}</p>
+            <p style="margin-top: 20px;">{{ post.act_capacity }}/{{ post.max_capacity }}</p>
+            <p class="description">{{ post.description }}</p>
+            <form action="" method="POST">
+                <button type="submit" class="btn-join" name="submit">Join!</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
 </div>
-{% endfor %}
+
 {% endblock %}
