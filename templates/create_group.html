@@ -17,7 +17,7 @@
             <input type="date" id="start_date" name="start_date">
         </div>
         <div class="input-box">
-            <input type="time" name="start_time">
+            <input type="time" id="start_time" name="start_time">
         </div>
         <h3>end</h3>
         <div class="input-box">
@@ -37,4 +37,19 @@
         <button type="submit" class="btn-submit" name="submit">create</button>
     </form>
 </div>
+
+<script>
+    // JavaScript code to set default start date and time to current date and time
+    const currentDateTime = new Date();
+
+    const startDateInput = document.getElementById("start_date");
+    const startTimeInput = document.getElementById("start_time");
+
+    // Format the date and time values to fit input format
+    const formattedDate = currentDateTime.toISOString().substr(0, 10);
+    const formattedTime = currentDateTime.toTimeString().substr(0, 5);
+
+    startDateInput.value = formattedDate;
+    startTimeInput.value = formattedTime;
+</script>
 {% endblock %}
