@@ -1,56 +1,48 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_login import LoginManager, login_user, current_user, login_required, logout_user, UserMixin
-from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from db_tables import db, User, Game, Group
+from apscheduler.schedulers.background import BackgroundScheduler
+import datetime
 
-# variable init
+
+def status_check():
+    with app.app_context():
+        posts = Group.query.all()
+        dt = datetime.datetime.now()
+        dt = dt.strftime("%Y-%m-%d %H:%M")
+        for post in posts:
+            start_date = post.start_date + ' ' + post.start_time
+            end_date = post.end_date + ' ' + post.end_time
+            if start_date > dt:
+                print("WAIT")
+                post.status = "wait"
+            elif start_date <= dt:
+                if dt < end_date:
+                    print("RUNNING")
+                    post.status = "run"
+                else:
+                    print("END")
+                    post.status = "end"
+        db.session.commit()
+
+
+# app init
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'h5ds2864t61fb46h4r61gb13n5'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///PlayerFinder.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+scheduler = BackgroundScheduler(daemon=True)
+scheduler.add_job(status_check, 'interval', minutes=1)
+scheduler.start()
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-
-# TABLE IN DB
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True)
-    email = db.Column(db.String(100), unique=True)
-    password = db.Column(db.String(100))
-    is_admin = db.Column(db.Boolean)
-
-
-class Game(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
-
-
-class Group(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    tittle = db.Column(db.String(100))
-    game_name = db.Column(db.String(100))
-    status = db.Column(db.String(50))
-    creator = db.Column(db.String(100))
-    start_date = db.Column(db.String(50))
-    end_date = db.Column(db.String(50))
-    start_time = db.Column(db.String(50))
-    end_time = db.Column(db.String(50))
-    act_capacity = db.Column(db.Integer)
-    max_capacity = db.Column(db.Integer)
-    description = db.Column(db.String(500))
-
-
-# create tables
-with app.app_context():
-    db.create_all()
 
 
 # routing
