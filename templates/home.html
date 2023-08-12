@@ -5,7 +5,8 @@
 <h1>Actual Groups</h1>
 {% for post in posts: %}
 <div class="wrapper request-container">
-    <h2 class="request-item">{{ post.game_name }}</h2>
+    <h2 class="request-item">{{ post.tittle }}</h2>
+    <h3 class="request-item">{{ post.game_name }}</h3>
     <div style="float: right; width: 90px;">
         <p>{{ post.status }}</p>
         <p class="creator">{{ post.creator }}</p>

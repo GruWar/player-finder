@@ -4,6 +4,10 @@
 <h1>Create Groups</h1>
 <div class="wrapper profile">
     <form action="{{ url_for('create_group') }}" method="POST">
+        <h3>Tittle</h3>
+        <div class="input-box">
+            <input type="text" name="tittle">
+        </div>
         <h3>Game Name</h3>
         <div class="input-box">
             <input type="text" name="game_name">

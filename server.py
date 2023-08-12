@@ -35,6 +35,7 @@ class Game(db.Model):
 
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    tittle = db.Column(db.String(100))
     game_name = db.Column(db.String(100))
     status = db.Column(db.String(50))
     creator = db.Column(db.String(100))
@@ -48,8 +49,8 @@ class Group(db.Model):
 
 
 # create tables
-# with app.app_context():
-#    db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 # routing
@@ -124,6 +125,7 @@ def home():
 def create_group():
     if request.method == "POST":
         new_group = Group(
+            tittle=request.form.get("tittle"),
             game_name=request.form.get("game_name"),
             creator=current_user.username,
             start_date=request.form.get("start_date"),
