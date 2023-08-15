@@ -3,27 +3,30 @@ from flask_login import LoginManager, login_user, current_user, login_required, 
 from werkzeug.security import generate_password_hash, check_password_hash
 from db_tables import db, User, Game, Group
 from apscheduler.schedulers.background import BackgroundScheduler
-import datetime
+from datetime import datetime, timedelta
 
 
 def status_check():
     with app.app_context():
-        posts = Group.query.all()
-        dt = datetime.datetime.now()
+        groups = Group.query.all()
+        dt = datetime.now()
         dt = dt.strftime("%Y-%m-%d %H:%M")
-        for post in posts:
-            start_date = post.start_date + ' ' + post.start_time
-            end_date = post.end_date + ' ' + post.end_time
+        dt_hour = datetime.now() + timedelta(hours=1)
+        dt_hour = dt_hour.strftime("%Y-%m-%d %H:%M")
+        print(dt_hour)
+        for group in groups:
+            start_date = group.start_date + ' ' + group.start_time
+            end_date = group.end_date + ' ' + group.end_time
             if start_date > dt:
                 print("WAIT")
-                post.status = "wait"
+                group.status = "wait"
             elif start_date <= dt:
                 if dt < end_date:
                     print("RUNNING")
-                    post.status = "run"
-                else:
-                    print("END")
-                    post.status = "end"
+                    group.status = "run"
+            else:
+                print("DELETE")
+                Group.query.filter_by(id=group.id).delete()
         db.session.commit()
 
 
@@ -38,6 +41,10 @@ login_manager.init_app(app)
 scheduler = BackgroundScheduler(daemon=True)
 scheduler.add_job(status_check, 'interval', minutes=1)
 scheduler.start()
+
+# create tables
+# with app.app_context():
+#     db.create_all()
 
 
 @login_manager.user_loader
@@ -69,7 +76,7 @@ def login():
         # Email exists and password correct
         else:
             login_user(user)
-            return redirect(url_for('home'))
+            return redirect(url_for('groups'))
 
     return render_template("login.html", current_user=current_user)
 
@@ -101,15 +108,21 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return redirect(url_for("home"))
+        return redirect(url_for("groups"))
     return render_template("register.html", current_user=current_user)
 
 
-@app.route("/home", methods=["GET", "POST"])
+@app.route("/groups", methods=["GET", "POST"])
 @login_required
-def home():
-    posts = Group.query.all()
-    return render_template("home.html", current_user=current_user, posts=posts)
+def groups():
+    groups = Group.query.all()
+    return render_template("groups.html", current_user=current_user, groups=groups)
+
+
+@app.route("/my_groups", methods=["GET", "POST"])
+@login_required
+def my_groups():
+    return render_template("my_groups.html", current_user=current_user)
 
 
 @app.route("/create_group", methods=["GET", "POST"])
@@ -119,20 +132,21 @@ def create_group():
         new_group = Group(
             tittle=request.form.get("tittle"),
             game_name=request.form.get("game_name"),
-            creator=current_user.username,
             start_date=request.form.get("start_date"),
             start_time=request.form.get("start_time"),
             end_date=request.form.get("end_date"),
             end_time=request.form.get("end_time"),
-            status="run",
+            status="",
             act_capacity=1,
             max_capacity=request.form.get("max_players"),
             description=request.form.get("description"),
+            author_id=current_user.id,
         )
 
         db.session.add(new_group)
         db.session.commit()
-        return redirect(url_for("home"))
+        status_check()
+        return redirect(url_for("groups"))
     return render_template("create_group.html", current_user=current_user)
 
 
@@ -194,7 +208,7 @@ def admin_edit():
                 db.session.commit()
         return render_template("admin.html", current_user=current_user)
     else:
-        return render_template("home.html", current_user=current_user)
+        return render_template("groups.html", current_user=current_user)
 
 
 @app.route('/logout')

@@ -9,18 +9,18 @@
         <!-- sem prijdou filtry-->
     </div>
     <div class="groups-container">
-        {% for post in posts: %}
+        {% for group in groups: %}
         <div class="wrapper request-container">
-            <h2 class="request-item">{{ post.tittle }}</h2>
-            <h3 class="request-item">{{ post.game_name }}</h3>
+            <h2 class="request-item">{{ group.tittle }}</h2>
+            <h3 class="request-item">{{ group.game_name }}</h3>
             <div style="float: right; width: 90px;">
-                <p>{{ post.status }}</p>
-                <p class="creator">{{ post.creator }}</p>
+                <p>{{ group.status }}</p>
+                <p class="creator">{{ group.author.username }}</p>
             </div>
-            <p>Date <br>{{ post.start_date }}-{{ post.end_date }}</p>
-            <p>Time <br>{{ post.start_time }}-{{ post.end_time }}</p>
-            <p style="margin-top: 20px;">{{ post.act_capacity }}/{{ post.max_capacity }}</p>
-            <p class="description">{{ post.description }}</p>
+            <p>Date <br>{{ group.start_date }}-{{ group.end_date }}</p>
+            <p>Time <br>{{ group.start_time }}-{{ group.end_time }}</p>
+            <p style="margin-top: 20px;">{{ group.act_capacity }}/{{ group.max_capacity }}</p>
+            <p class="description">{{ group.description }}</p>
             <form action="" method="POST">
                 <button type="submit" class="btn-join" name="submit">Join!</button>
             </form>
