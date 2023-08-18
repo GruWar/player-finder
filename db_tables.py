@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
     # relationships
     created_groups = relationship("Group", back_populates="author")
 
+
 class Game(db.Model):
 
     __tablename__ = "games"
@@ -44,6 +45,5 @@ class Group(db.Model):
     description = db.Column(db.String(500))
 
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    # relationships
     author = relationship("User", back_populates="created_groups")
-
-

@@ -3,31 +3,39 @@ from flask_login import LoginManager, login_user, current_user, login_required, 
 from werkzeug.security import generate_password_hash, check_password_hash
 from db_tables import db, User, Game, Group
 from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime, timedelta
+from log_operations import *
 
 
 def status_check():
     with app.app_context():
         groups = Group.query.all()
-        dt = datetime.now()
-        dt = dt.strftime("%Y-%m-%d %H:%M")
-        dt_hour = datetime.now() + timedelta(hours=1)
-        dt_hour = dt_hour.strftime("%Y-%m-%d %H:%M")
-        print(dt_hour)
+        dt_now = datetime.now()
+        dt_now = dt_now.strftime("%Y-%m-%d %H:%M")
         for group in groups:
             start_date = group.start_date + ' ' + group.start_time
             end_date = group.end_date + ' ' + group.end_time
-            if start_date > dt:
+            if start_date > dt_now:
                 print("WAIT")
                 group.status = "wait"
-            elif start_date <= dt:
-                if dt < end_date:
+            elif start_date <= dt_now:
+                if dt_now < end_date:
                     print("RUNNING")
                     group.status = "run"
-            else:
+                else:
+                    print("END")
+                    group.status = "end"
+
+        db.session.commit()
+
+
+def group_delete():
+    with app.app_context():
+        groups = Group.query.all()
+        for group in groups:
+            if group.status == "end":
                 print("DELETE")
                 Group.query.filter_by(id=group.id).delete()
-        db.session.commit()
+    db.session.commit()
 
 
 # app init
@@ -39,7 +47,8 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 scheduler = BackgroundScheduler(daemon=True)
-scheduler.add_job(status_check, 'interval', minutes=1)
+scheduler.add_job(status_check, 'interval', minutes=15)
+scheduler.add_job(group_delete, 'interval', minutes=30)
 scheduler.start()
 
 # create tables
@@ -108,6 +117,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
+        log_new_user(new_user)
         return redirect(url_for("groups"))
     return render_template("register.html", current_user=current_user)
 
@@ -119,10 +129,17 @@ def groups():
     return render_template("groups.html", current_user=current_user, groups=groups)
 
 
-@app.route("/my_groups", methods=["GET", "POST"])
+@app.route("/my_groups")
 @login_required
 def my_groups():
     return render_template("my_groups.html", current_user=current_user)
+
+
+@app.route("/group_info/<int:group_id>")
+@login_required
+def group_info(group_id):
+    requested_group = Group.query.get(group_id)
+    return render_template("group_info.html", current_user=current_user, group=requested_group)
 
 
 @app.route("/create_group", methods=["GET", "POST"])
@@ -181,6 +198,7 @@ def edit_profile():
                     salt_length=8,
                 )
                 user.password = hash_and_salted_password
+            log_modify_user(user)
             db.session.commit()
     return render_template("profile.html", current_user=current_user)
 
@@ -205,6 +223,11 @@ def admin_edit():
             if request.form['action'] == "delete_user":
                 user_id = request.form.get("user_id")
                 User.query.filter_by(id=user_id).delete()
+                log_delete_user(user_id)
+                db.session.commit()
+            if request.form['action'] == "delete_group":
+                group_id = request.form.get("group_id")
+                Group.query.filter_by(id=group_id).delete()
                 db.session.commit()
         return render_template("admin.html", current_user=current_user)
     else:
