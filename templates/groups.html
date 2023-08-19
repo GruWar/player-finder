@@ -12,6 +12,10 @@
     <div class="groups-container">
         {% for group in groups: %}
         <div class="wrapper request-container">
+            <div class="game-ico-box">
+                <img class="game-ico" src="static/img/defaultico.png" alt="default_ico.png">
+            </div>
+            
             <h2 class="request-item">{{ group.tittle }}</h2>
             {% if current_user.is_admin == True: %}
             <p>{{ group.id }}</p>

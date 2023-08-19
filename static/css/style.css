@@ -264,6 +264,22 @@ header li a:hover {
   height: 40px;
 }
 
+.game-ico-box{
+  display: flex;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  border: 1px solid grey;
+  overflow: hidden;
+}
+.game-ico{
+  display: block;
+  max-height: 200%;
+  max-width: 200%;
+}
+
 .description{
   margin: 15px 0 15px 0;
 }
