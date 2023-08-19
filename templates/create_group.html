@@ -6,29 +6,29 @@
     <form action="{{ url_for('create_group') }}" method="POST">
         <h3>Tittle</h3>
         <div class="input-box">
-            <input type="text" name="tittle">
+            <input type="text" name="tittle" required>
         </div>
         <h3>Game Name</h3>
         <div class="input-box">
-            <input type="text" name="game_name">
+            <input type="text" name="game_name" required>
         </div>
         <h3>start</h3>
         <div class="input-box">
-            <input type="date" id="start_date" name="start_date">
+            <input type="date" id="start_date" name="start_date" required>
         </div>
         <div class="input-box">
-            <input type="time" id="start_time" name="start_time">
+            <input type="time" id="start_time" name="start_time" step="900" required>
         </div>
         <h3>end</h3>
         <div class="input-box">
-            <input type="date" name="end_date">
+            <input type="date" id="end_date" name="end_date" required>
         </div>
         <div class="input-box">
-            <input type="time" name="end_time">
+            <input type="time" id="end_time" name="end_time" step="900" required>
         </div>
         <h3>number of players</h3>
         <div class="input-box">
-            <input type="number" name="max_players">
+            <input type="number" name="max_players" required>
         </div>
         <h3>description</h3>
         <div class="input-box">
@@ -41,15 +41,48 @@
 <script>
     // JavaScript code to set default start date and time to current date and time
     const currentDateTime = new Date();
+    // Calculate the end time as current time + 2 hours
+    const endTime = new Date(currentDateTime);
+    endTime.setHours(endTime.getHours() + 2);
+    // Calculate the closest previous 15-minute mark
+    const closestQuarter = Math.floor(currentDateTime.getMinutes() / 15) * 15;
+    currentDateTime.setMinutes(closestQuarter);
+    endTime.setMinutes(closestQuarter);
 
     const startDateInput = document.getElementById("start_date");
     const startTimeInput = document.getElementById("start_time");
+    const endDateInput = document.getElementById("end_date");
+    const endTimeInput = document.getElementById("end_time");
 
     // Format the date and time values to fit input format
     const formattedDate = currentDateTime.toISOString().substr(0, 10);
     const formattedTime = currentDateTime.toTimeString().substr(0, 5);
 
+    // Format the end time value
+    const formattedEndTime = endTime.toTimeString().substr(0, 5);
+
     startDateInput.value = formattedDate;
     startTimeInput.value = formattedTime;
+    endDateInput.value = formattedDate;
+    endTimeInput.value = formattedEndTime;
+
+    // Round time input to the nearest 15-minute mark (quarter-hour)
+    startTimeInput.addEventListener('blur', () => {
+        const enteredTime = new Date(`2000-01-01T${startTimeInput.value}:00`);
+        const roundedMinutes = Math.round(enteredTime.getMinutes() / 15) * 15;
+        enteredTime.setMinutes(roundedMinutes);
+
+        const roundedTime = enteredTime.toTimeString().substr(0, 5);
+        startTimeInput.value = roundedTime;
+    });
+
+    endTimeInput.addEventListener('blur', () => {
+        const enteredTime = new Date(`2000-01-01T${endTimeInput.value}:00`);
+        const roundedMinutes = Math.round(enteredTime.getMinutes() / 15) * 15;
+        enteredTime.setMinutes(roundedMinutes);
+
+        const roundedTime = enteredTime.toTimeString().substr(0, 5);
+        endTimeInput.value = roundedTime;
+    });
 </script>
 {% endblock %}

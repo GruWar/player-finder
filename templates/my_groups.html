@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Player Finder{% endblock %}
 {% block content %}
-<h2>created groups</h2>
-{% for group in current_user.created_groups: %}
-<a href="{{ url_for('group_info', group_id=group.id) }}">{{ group.tittle }}</a>
-{% endfor %}
-<h2>joined groups</h2>
+<div class="my-groups-container">
+    <div class="wrapper created-groups">
+        <h2>created groups</h2>
+        {% for group in current_user.created_groups %}
+        <a href="{{ url_for('group_info', group_id=group.id) }}">{{ group.tittle }}</a><br>
+        {% endfor %}
+    </div>
+
+    <div class="wrapper joined-groups">
+        <h2>joined groups</h2>
+        <!-- Display joined groups here -->
+    </div>
+</div>
 {% endblock %}

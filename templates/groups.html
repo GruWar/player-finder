@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Player Finder{% endblock %}
 {% block content %}
-<a href="{{ url_for('create_group') }}">Create</a>
-<h1>Actual Groups</h1>
-
+<div class="wrapper groups-title">
+    <a href="{{ url_for('create_group') }}">Create</a>
+    <h1>Actual Groups</h1>
+</div>
 <div class="groups-wrapper">
-    <div class="groups-filter">
+    <div class="groups-filter wrapper">
         <!-- sem prijdou filtry-->
     </div>
     <div class="groups-container">

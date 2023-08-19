@@ -221,6 +221,24 @@ header li a:hover {
 }
 
 /* party request main body*/
+.groups-title {
+  width: 730px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* To push elements to the sides */
+  margin: 10px auto; /* Center the container horizontally */
+}
+
+.groups-title a {
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.groups-title h1 {
+  text-align: center;
+  margin-right: 55px;
+}
+
 .groups-wrapper{
   display: flex;
   align-self: center;
@@ -231,13 +249,15 @@ header li a:hover {
 }
 
 .groups-filter{
+  margin-right: 10px;
   width: 300px;
+  height: 800px;
 }
 
 /* party request bubble */
 .request-container{
   color: var(--color-text);
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .request-container form{
@@ -269,4 +289,18 @@ header li a:hover {
   height: 40px;
   width: 80px;
   float: right;
+}
+
+
+/* my groups */
+
+.my-groups-container{
+  display: flex;
+    justify-content: space-between;
+    width: 60%; /* Adjust as needed */
+    margin: 0 auto; /* Center the container */
+    margin-top: 5vh;
+}
+.created-groups h2, .joined-groups h2{
+  color: var(--color-text);
 }
