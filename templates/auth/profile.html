@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="wrapper profile">
+    <form method="POST">
+        {{ form_edit.csrf_token }}
+        {{ form_passwd.csrf_token }}
+        <h2>Edit Profile</h2>
+            {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for message in messages %}
+                     <p>{{ message }}</p>
+                    {% endfor %}
+                  {% endif %}
+            {% endwith %}
+        <div class="profile-ico-container">
+            <div class="profile-ico-box">
+                <img class="profile-ico" src=" {{ 'static/img/user_icons/' + current_user.icon }}">
+            </div>
+        </div>
+        
+        <div class="input-box">
+            {{ form_edit.username(value=current_user.username) }}
+        </div>
+        <div class="input-box">
+            {{ form_edit.email(value=current_user.email) }}
+        </div>
+            {{ form_edit.submit(class="btn-submit") }}
+        <h2>Change password</h2>
+        <div class="input-box">
+            {{ form_passwd.old_password(placeholder="old Password") }}
+        </div>
+        <div class="input-box">
+            {{ form_passwd.new_password(placeholder="new Password") }}
+        </div>
+            {{ form_passwd.submit(class="btn-submit") }}
+    </form>
+</div>
+
+{% endblock %}

@@ -1,31 +1,33 @@
 {% extends 'base.html' %}
-{% block title %}Player Finder{% endblock %}
-
 {% block content %}
 <div class="gradient-background">
     <div class="wrapper">
-        <form action="{{ url_for('register') }}" method="POST">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.csrf_token }}
             <h1>Register</h1>
                 {% with messages = get_flashed_messages() %}
                   {% if messages %}
                     {% for message in messages %}
-                     <p>{{ message }}</p>
+                     <p class="msg-error">{{ message }}</p>
                     {% endfor %}
                   {% endif %}
                 {% endwith %}
             <div class="input-box">
-                <input type="text" placeholder="Username" name="username" required>
+                {{ form.user_icon() }}
+            </div>
+            <div class="input-box">
+                {{ form.username(placeholder="Username") }}
                 <i class='bx bxs-user'></i>
             </div>
             <div class="input-box">
-                <input type="email" placeholder="Email" name="email" required>
+                {{ form.email(placeholder="Email") }}
                 <i class='bx bx-envelope'></i>
             </div>
             <div class="input-box">
-                <input type="password" placeholder="Password" name="password" required>
-                <i class='bx bxs-lock-alt' ></i>
+                {{ form.password(placeholder="Password") }}
+                <i class='bx bxs-lock-alt'></i>
             </div>
-            <button type="submit" class="btn-submit" name="submit">Register</button>
+                {{ form.submit(class="btn-submit") }}
             <div class="register-login-link">
                 <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
             </div>

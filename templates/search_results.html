@@ -1,0 +1,31 @@
+        {% for group in groups: %}
+        {% if group.status != 'end' %}
+        <div class="wrapper request-container">
+            <div class="game-ico-box">
+                <img class="game-ico" src=" {{ '../static/img/game_icons/' + group.game.icon }}">
+            </div>
+            <div style="float: right; width: 90px;">
+                <p>status:<br>{{ group.status }}</p><br>
+                <p class="creator">Author:<br>{{ group.author.username }}</p>
+            </div>
+            <h2 class="request-item">{{ group.tittle }}</h2>
+            {% if current_user.is_admin == True: %}
+            <p>{{ group.id }}</p>
+            {% endif %}
+            <h3 style="margin-bottom: 5px;" class="request-item">{{ group.game.name }}</h3>
+            <div class="request-time">
+                <p>Date <br>{{ group.start_date }} - {{ group.end_date }}</p>
+                <p style="margin-left: 30px;">Time <br>{{ group.start_time }} - {{ group.end_time }}</p>
+            </div>
+            <p style="margin-top: 10px;">group: {{ group.act_capacity }}/{{ group.max_capacity }}</p>
+            <p class="description">{{ group.description }}</p>
+                {% if group and group.act_capacity >= group.max_capacity %}
+                    <h3>Full!</h3>
+                {% elif group and current_user.id != group.author_id and current_user not in group.users: %}
+                    <form action="{{ url_for('join_group', group_id=group.id) }}" method="POST">
+                        <button type="submit" class="btn-join" name="submit">Join!</button>
+                    </form>
+                {% endif %}
+        </div>
+        {% endif %}
+        {% endfor %}

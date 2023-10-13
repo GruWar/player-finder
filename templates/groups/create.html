@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Player Finder{% endblock %}
+{% block content %}
+<!--<h1>Create Groups</h1>-->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="msg-error">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<div class="wrapper profile">
+    <form method="POST">
+        {{ form.csrf_token }}
+        <h3>Tittle</h3>
+        <div class="input-box">
+            {{ form.title() }}
+        </div>
+        <h3>Game Name</h3>
+        <div class="input-box">
+            {{ form.game_name() }}
+        </div>
+        <h3>start</h3>
+        <div class="input-box">
+            {{ form.start_date() }}
+        </div>
+        <div class="input-box">
+            {{ form.start_time_hours() }}
+            {{ form.start_time_minutes() }}
+        </div>
+        <h3>end</h3>
+        <div class="input-box">
+            {{ form.end_date() }}
+        </div>
+        <div class="input-box">
+            {{ form.end_time_hours() }}
+            {{ form.end_time_minutes() }}
+        </div>
+        <h3>number of players</h3>
+        <div class="input-box">
+            {{ form.max_players() }}
+        </div>
+        <h3>description</h3>
+        <div class="input-box">
+            {{ form.description() }}
+        </div>
+            {{ form.submit(class="btn-submit") }}
+    </form>
+</div>
+
+
+{% endblock %}

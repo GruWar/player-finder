@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="wrapper profile profile-admin">
+    <form action="admin_edit" method="POST" enctype="multipart/form-data">
+        <h2>Games</h2>
+        <h3>add game</h3>
+        <div class="input-box">
+            {{ form.game_name() }}
+        </div>
+        <div class="input-box">
+            {{ form.game_icon() }}
+        </div>
+            {{ form.create_game_submit(class="btn-submit") }}
+    </form>
+</div>
+{% endblock %}

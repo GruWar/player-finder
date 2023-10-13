@@ -1,5 +1,40 @@
 {% extends 'base.html' %}
-{% block title %}Player Finder{% endblock %}
 {% block content %}
-<h1>Index</h1>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<div class="index-container">
+    <div class="i index-introduction wrapper">
+        <h1>Join the players in theirs adventure or create yours</h1>
+        <p>Some text about the page</p>
+    </div>
+        
+    <div class="i index-stats wrapper">
+        <div class="i-stats">
+            <h2>Registrated players</h2>
+            <h3>{{ cpl }}</h3>
+        </div>
+        <div class="i-stats">
+            <h2>Games in Database</h2>
+            <h3>{{ cga }}</h3>
+        </div>
+        <div class="i-stats">
+            <h2>Open groups</h2>
+            <h3>{{ cgr }}</h3>
+        </div>
+    </div>
+
+    <div class="i index-roadmap wrapper">
+        <h2>Roadmap</h2>
+        <p>
+            1.0<br>
+            First uploaded version of our web app.<br>
+        </p>
+    </div>
+</div>
+
 {% endblock %}
